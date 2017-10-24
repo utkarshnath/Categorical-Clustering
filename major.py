@@ -1,12 +1,19 @@
+from sklearn.cluster import KMeans
+from kmodes.kmodes import KModes
+from sklearn.cluster import MeanShift, estimate_bandwidth
+from sklearn.cluster import AgglomerativeClustering,FeatureAgglomeration
 import numpy as np
 from scipy.stats.stats import pearsonr
 from scipy.spatial import distance
+import skfuzzy as fuzz
+
 lines = np.loadtxt("fitting_lenses.txt")
-print lines.shape
 X = lines[:, [1, 2, 3, 4]]
 Y = lines[:, [5]]
 m = 4
 N = 24
+for i in xrange(0,N):
+    Y[i]-=1
 def theta(a,b):
     similarity = 0;
     for i in xrange(0,m):
@@ -54,7 +61,46 @@ distMatt2 = createDistanceMattrix2(data)
 a = sum(distMatt1,[])
 b = sum(distMatt2,[])
 correlationCoefficient = pearsonr(a,b)
-print correlationCoefficient[0]
-# print X
-# print " -------------------------------------------------"
-# print data.shape;
+print "correlationCoefficient : ",correlationCoefficient[0]
+
+def count(Y,label,number_of_classes):
+    simMattrix = []
+    for i in xrange(0,number_of_classes):
+        temp = []
+        for j in xrange(0,number_of_classes):
+            temp.append(0)
+        simMattrix.append(temp)
+    similarLabels = 0
+    for i in xrange(0,number_of_classes):
+        for j in xrange(0,N):
+            if(Y[j]==i):
+                x = label[j]
+                simMattrix[i][x] = simMattrix[i][x] + 1
+        similarLabels+=max(simMattrix[i])
+
+    return similarLabels/(N*1.0)
+
+kmeans = KMeans(n_clusters=3,n_init=100,tol=0.00001).fit(data)
+print "---------- SBC -------------"
+print kmeans.labels_
+print count(Y,kmeans.labels_,3)
+print "----------------------------"
+
+km = KModes(n_clusters=3, n_init=100).fit(X)
+print "---------- kmodes ----------"
+print km.labels_
+print count(Y,km.labels_,3)
+print "----------------------------"
+
+bandwidth = estimate_bandwidth(data, quantile=0.2, n_samples=N)
+ms = MeanShift(bandwidth=bandwidth).fit(data)
+print "---------- Mean Shift ----------"
+print ms.labels_
+print count(Y,ms.labels_,3)
+print "----------------------------"
+
+fa = FeatureAgglomeration(n_clusters=3).fit(data)
+print "---------- Hierarchical  ----------"
+print fa.labels_
+print count(Y,fa.labels_,3)
+print "----------------------------"
