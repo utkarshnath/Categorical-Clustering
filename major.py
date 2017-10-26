@@ -7,26 +7,27 @@ from scipy.stats.stats import pearsonr
 from scipy.spatial import distance
 import skfuzzy as fuzz
 
-lines = np.loadtxt("breast_cancer_data.txt",delimiter=',')
-X = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9]]
-Y = lines[:, [10]]
-m = 9
-N = 699
-number_of_clusters = 2
+# lines = np.loadtxt("breast_cancer_data.txt",delimiter=',')
+# X = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9]]
+# Y = lines[:, [10]]
+# m = 9
+# N = 699
+# number_of_clusters = 2
 
-# lines = np.loadtxt("fitting_lenses.txt")
-# X = lines[:, [1, 2, 3, 4]]
-# Y = lines[:, [5]]
-# m = 4
-# N = 24
-# number_of_clusters = 3
+lines = np.loadtxt("fitting_lenses.txt")
+X = lines[:, [1, 2, 3, 4]]
+Y = lines[:, [5]]
+m = 4
+N = 24
+number_of_clusters = 3
 
-
+# has to be changed according to the data set
 for i in xrange(0,N):
     if(Y[i]==2):
         Y[i]=0
     else:
         Y[i]=1
+
 def theta(a,b):
     similarity = 0;
     for i in xrange(0,m):
@@ -39,6 +40,18 @@ def dist(a,b):
     for i in xrange(0,m):
         if(a[i]!=b[i]):
             d = d + 1
+    return d
+
+def distance1(a,b):
+    d = 0
+    for i in xrange(0,len(a)):
+        x = abs(a[i]-b[i])
+        if (a[i]==0):
+            a[i]=1
+        if (b[i]==0):
+            b[i]=1
+        d+= pow(x,2)/(a[i]*b[i]*1.0)
+    d = np.sqrt(d)
     return d
 
 def createData():
@@ -64,13 +77,16 @@ def createDistanceMattrix2(probabilityMattrix):
     for i in xrange(0,N):
         temp = []
         for j in xrange(0,N):
-            value = distance.euclidean(probabilityMattrix[i],probabilityMattrix[j])
+            value = distance1(probabilityMattrix[i],probabilityMattrix[j])
             temp.append(value)
         distanceMattrix.append(temp)
     return distanceMattrix
 data = createData()
 distMatt1 = createDistanceMattrix1(X)
 distMatt2 = createDistanceMattrix2(data)
+# print data
+# print distMatt1
+# print distMatt2
 a = sum(distMatt1,[])
 b = sum(distMatt2,[])
 correlationCoefficient = pearsonr(a,b)
