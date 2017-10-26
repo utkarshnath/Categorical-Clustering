@@ -47,9 +47,14 @@ def distance1(a,b):
     for i in xrange(0,len(a)):
         x = abs(a[i]-b[i])
         if (a[i]==0):
+            # print a[i]," "
             a[i]=1
+            # print a[i]," "
         if (b[i]==0):
+            # print b[i]," "
             b[i]=1
+            # print b[i]," "
+        # print x
         d+= pow(x,2)/(a[i]*b[i]*1.0)
     d = np.sqrt(d)
     return d
@@ -59,7 +64,7 @@ def createData():
     for i in xrange(0,N):
         temp = []
         for j in xrange(0,N):
-            temp.append(theta(X[i],X[j])*(1.0)/m)
+            temp.append(theta(X[i],X[j])*(1.0))
         data.append(temp)
     return data
 
