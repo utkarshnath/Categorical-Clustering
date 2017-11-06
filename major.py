@@ -207,22 +207,21 @@ def count(Y,label,number_of_classes):
                 x = label[j]
                 simMattrix[i][x] = simMattrix[i][x] + 1
         similarLabels+=max(simMattrix[i])
-
     return similarLabels/(N*1.0)
 
-kmeans = KMeans(n_clusters=number_of_clusters,n_init=100,tol=0.00001).fit(NovelDistMatt)
+kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(NovelDistMatt)
 print "---------- SBC Novel-------------"
 # print kmeans.labels_
 print count(Y,kmeans.labels_,number_of_clusters)
 print "----------------------------"
 
-kmeans = KMeans(n_clusters=number_of_clusters,n_init=100,tol=0.00001).fit(EuclideanDistMatt)
+kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(EuclideanDistMatt)
 print "---------- SBC Euclidean-------------"
 # print kmeans.labels_
 print count(Y,kmeans.labels_,number_of_clusters)
 print "----------------------------"
 
-kmeans = KMeans(n_clusters=number_of_clusters,n_init=100,tol=0.00001).fit(CosineDistMatt)
+kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(CosineDistMatt)
 print "---------- SBC Cosine-------------"
 # print kmeans.labels_
 print count(Y,kmeans.labels_,number_of_clusters)
