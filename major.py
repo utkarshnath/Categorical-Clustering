@@ -7,6 +7,7 @@ from scipy.stats.stats import pearsonr
 from scipy.spatial import distance
 import skfuzzy as fuzz
 
+Xtend=[];
 # has to be changed according to the data set
 # lines = np.loadtxt("breast_cancer_data.txt",delimiter=',')
 # X = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9]]
@@ -23,6 +24,18 @@ import skfuzzy as fuzz
 # lines = np.loadtxt("fitting_lenses.txt")
 # X = lines[:, [1, 2, 3, 4]]
 # Y = lines[:, [5]]
+<<<<<<< ebe9e30ac69137b295bc28a16f03e1ff1240124a
+=======
+# m = 4
+# N = 24
+# number_of_clusters = 3
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("Balloon.txt")
+# X = lines[:, [0, 1, 2, 3]]
+# Y = lines[:, [4]]
+>>>>>>> Added SBAC for mixed data
 # m = 4
 # N = 24
 # number_of_clusters = 3
@@ -102,6 +115,7 @@ for i in xrange(0,N):
 # for i in xrange(0,N):
 #         Y[i]-=1
 
+<<<<<<< ebe9e30ac69137b295bc28a16f03e1ff1240124a
 # lines = np.loadtxt("car.txt")
 # X = lines[:, [0, 1, 2, 3, 4, 5]]
 # Y = lines[:, [6]]
@@ -148,6 +162,63 @@ for i in xrange(0,N):
 # number_of_clusters = 4
 # for i in xrange(0,N):
 #         Y[i]-=1
+=======
+# lines = np.loadtxt("ticTacToe.txt")
+# X = lines[:, [0, 1, 2, 3, 4, 5, 6, 7, 8]]
+# Y = lines[:, [9]]
+# m = 9
+# N = 958
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("spectf.txt")
+# X = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
+# 33,34,35,36,37,38,39,40,41,42,43]]
+# Y = lines[:, [44]]
+# m = 44
+# N = 267
+# number_of_clusters = 2
+
+# lines = np.loadtxt("Audiology.txt")
+# X = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,
+# 44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68]]
+# Y = lines[:, [69]]
+# m = 69
+# N = 226
+# number_of_clusters = 24
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+lines = np.loadtxt("ZooD.txt")
+X = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,14,15,16]]
+Y = lines[:, [0]]
+Xtend = lines[:, [13]]
+m = 15
+N = 101
+number_of_clusters = 7
+for i in xrange(0,N):
+        Y[i]-=1
+
+# lines = np.loadtxt("Flowies.txt")
+# X = lines[:, [1, 2, 3, 4]]
+# Y = lines[:, [0]]
+# Xtend = lines[:, [5]]
+# m = 4
+# N = 168
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("HorseShoeCrab.txt")
+# X = lines[:, [0, 1]]
+# Y = lines[:, [5]]
+# Xtend = lines[:, [2, 4]]
+# m = 2
+# N = 173
+# number_of_clusters = 2
+
+>>>>>>> Added SBAC for mixed data
 
 def theta(a,b):
     similarity = 0;
@@ -186,6 +257,7 @@ def createData():
         # print "data ",i
         temp = []
         for j in xrange(0,N):
+            print "create data ",i;
             temp.append((theta(X[i],X[j])*(1.0))/m)
         data.append(temp)
     return data
@@ -195,6 +267,7 @@ def createDistanceMattrix1(X):
     for i in xrange(0,N):
         # print "distance ",i
         temp = []
+        print "create dist1",i;
         for j in xrange(0,N):
             temp.append(dist(X[i],X[j]))
         distanceMattrix.append(temp)
@@ -205,6 +278,7 @@ def createNovelDistanceMattrix(probabilityMattrix):
     for i in xrange(0,N):
         # print "novel ",i
         temp = []
+        print "create novel ",i;
         for j in xrange(0,N):
             value = distance1(probabilityMattrix[i],probabilityMattrix[j])
             temp.append(value)
@@ -216,8 +290,20 @@ def createEuclideanDistanceMattrix(probabilityMattrix):
     for i in xrange(0,N):
         # print "euclidean ",i
         temp = []
+        print "create eucl ",i;
         for j in xrange(0,N):
             value = distance.euclidean(probabilityMattrix[i],probabilityMattrix[j])
+            temp.append(value)
+        distanceMattrix.append(temp)
+    return distanceMattrix
+
+def createManhattanDistanceMattrix(probabilityMattrix):
+    distanceMattrix = []
+    for i in xrange(0,N):
+        temp = []
+        print "create eucl ",i;
+        for j in xrange(0,N):
+            value = distance.cityblock(probabilityMattrix[i],probabilityMattrix[j])
             temp.append(value)
         distanceMattrix.append(temp)
     return distanceMattrix
@@ -227,6 +313,7 @@ def createCosineDistanceMattrix(probabilityMattrix):
     for i in xrange(0,N):
         # print "cosine ",i
         temp = []
+        print "create cosine",i;
         for j in xrange(0,N):
             value = distance.cosine(probabilityMattrix[i],probabilityMattrix[j])
             temp.append(value)
@@ -236,13 +323,26 @@ data = createData()
 distMatt1 = createDistanceMattrix1(X)
 NovelDistMatt = createNovelDistanceMattrix(data)
 EuclideanDistMatt = createEuclideanDistanceMattrix(data)
+ManhattanDistMatt = createManhattanDistanceMattrix(data)
 CosineDistMatt = createCosineDistanceMattrix(data)
+
+NovelDistMatt=np.concatenate((NovelDistMatt,Xtend),axis=1);
+EuclideanDistMatt=np.concatenate((EuclideanDistMatt,Xtend),axis=1);
+ManhattanDistMatt=np.concatenate((ManhattanDistMatt,Xtend),axis=1);
+CosineDistMatt=np.concatenate((CosineDistMatt,Xtend),axis=1);
+
 # print data
 # print distMatt1
 # print distMatt2
+<<<<<<< ebe9e30ac69137b295bc28a16f03e1ff1240124a
 a = sum(distMatt1,[])
 b = sum(NovelDistMatt,[])
 correlationCoefficient = pearsonr(a,b)
+=======
+# a = sum(distMatt1,[])
+# b = sum(NovelDistMatt,[])
+# correlationCoefficient = pearsonr(a,b)
+>>>>>>> Added SBAC for mixed data
 # print "correlationCoefficient : ",correlationCoefficient[0]
 
 def count(Y,label,number_of_classes):
@@ -261,13 +361,24 @@ def count(Y,label,number_of_classes):
         similarLabels+=max(simMattrix[i])
     return similarLabels/(N*1.0)
 
+print "donematt"
 kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(NovelDistMatt)
 print "---------- SBC Novel-------------"
 # print kmeans.labels_
 print count(Y,kmeans.labels_,number_of_clusters)
 print "----------------------------"
 
+<<<<<<< ebe9e30ac69137b295bc28a16f03e1ff1240124a
 kmeans = KMeans(n_clusters=number_of_clusters,n_init=100,tol=0.00001).fit(EuclideanDistMatt)
+=======
+kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(ManhattanDistMatt)
+print "---------- SBC Manhattan-------------"
+# print kmeans.labels_
+print count(Y,kmeans.labels_,number_of_clusters)
+print "----------------------------"
+
+kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(EuclideanDistMatt)
+>>>>>>> Added SBAC for mixed data
 print "---------- SBC Euclidean-------------"
 # print kmeans.labels_
 print count(Y,kmeans.labels_,number_of_clusters)
@@ -278,6 +389,7 @@ print "---------- SBC Cosine-------------"
 # print kmeans.labels_
 print count(Y,kmeans.labels_,number_of_clusters)
 print "----------------------------"
+
 
 km = KModes(n_clusters=number_of_clusters, n_init=100).fit(X)
 print "---------- kmodes ----------"
