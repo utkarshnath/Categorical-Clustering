@@ -24,18 +24,6 @@ Xtend=[];
 # lines = np.loadtxt("fitting_lenses.txt")
 # X = lines[:, [1, 2, 3, 4]]
 # Y = lines[:, [5]]
-<<<<<<< ebe9e30ac69137b295bc28a16f03e1ff1240124a
-=======
-# m = 4
-# N = 24
-# number_of_clusters = 3
-# for i in xrange(0,N):
-#         Y[i]-=1
-
-# lines = np.loadtxt("Balloon.txt")
-# X = lines[:, [0, 1, 2, 3]]
-# Y = lines[:, [4]]
->>>>>>> Added SBAC for mixed data
 # m = 4
 # N = 24
 # number_of_clusters = 3
@@ -115,54 +103,6 @@ for i in xrange(0,N):
 # for i in xrange(0,N):
 #         Y[i]-=1
 
-<<<<<<< ebe9e30ac69137b295bc28a16f03e1ff1240124a
-# lines = np.loadtxt("car.txt")
-# X = lines[:, [0, 1, 2, 3, 4, 5]]
-# Y = lines[:, [6]]
-# m = 6
-# N = 1728
-# number_of_clusters = 4
-# for i in xrange(0,N):
-#         Y[i]-=1
-
-# lines = np.loadtxt("shuttle-landing-control.txt",delimiter=',')
-# X = lines[:, [0, 1, 2, 3, 4, 5]]
-# Y = lines[:, [6]]
-# m = 6
-# N = 15
-# number_of_clusters = 2
-# for i in xrange(0,N):
-#         Y[i]-=1
-
-# lines = np.loadtxt("balance-scale.txt",delimiter=',')
-# X = lines[:, [1, 2, 3, 4]]
-# Y = lines[:, [0]]
-# m = 4
-# N = 625
-# number_of_clusters = 3
-# for i in xrange(0,N):
-#         Y[i]-=1
-
-# lines = np.loadtxt("soybean-large.txt",delimiter=',')
-# X = lines[:, [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]]
-# Y = lines[:, [0]]
-# m = 35
-# N = 290
-# print lines.shape
-# number_of_clusters = 15
-# for i in xrange(0,N):
-#         Y[i]-=1
-
-# lines = np.loadtxt("fisher-order.txt",delimiter=',')
-# X = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33]]
-# Y = lines[:, [34]]
-# print lines.shape
-# m = 34
-# N = 47
-# number_of_clusters = 4
-# for i in xrange(0,N):
-#         Y[i]-=1
-=======
 # lines = np.loadtxt("ticTacToe.txt")
 # X = lines[:, [0, 1, 2, 3, 4, 5, 6, 7, 8]]
 # Y = lines[:, [9]]
@@ -189,16 +129,16 @@ for i in xrange(0,N):
 # number_of_clusters = 24
 # for i in xrange(0,N):
 #         Y[i]-=1
-
-lines = np.loadtxt("ZooD.txt")
-X = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,14,15,16]]
-Y = lines[:, [0]]
-Xtend = lines[:, [13]]
-m = 15
-N = 101
-number_of_clusters = 7
-for i in xrange(0,N):
-        Y[i]-=1
+#
+# lines = np.loadtxt("ZooD.txt")
+# X = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,14,15,16]]
+# Y = lines[:, [0]]
+# Xtend = lines[:, [13]]
+# m = 15
+# N = 101
+# number_of_clusters = 7
+# for i in xrange(0,N):
+#         Y[i]-=1
 
 # lines = np.loadtxt("Flowies.txt")
 # X = lines[:, [1, 2, 3, 4]]
@@ -218,7 +158,6 @@ for i in xrange(0,N):
 # N = 173
 # number_of_clusters = 2
 
->>>>>>> Added SBAC for mixed data
 
 def theta(a,b):
     similarity = 0;
@@ -254,7 +193,6 @@ def distance1(a,b):
 def createData():
     data = []
     for i in xrange(0,N):
-        # print "data ",i
         temp = []
         for j in xrange(0,N):
             print "create data ",i;
@@ -265,7 +203,6 @@ def createData():
 def createDistanceMattrix1(X):
     distanceMattrix = []
     for i in xrange(0,N):
-        # print "distance ",i
         temp = []
         print "create dist1",i;
         for j in xrange(0,N):
@@ -276,7 +213,6 @@ def createDistanceMattrix1(X):
 def createNovelDistanceMattrix(probabilityMattrix):
     distanceMattrix = []
     for i in xrange(0,N):
-        # print "novel ",i
         temp = []
         print "create novel ",i;
         for j in xrange(0,N):
@@ -288,7 +224,6 @@ def createNovelDistanceMattrix(probabilityMattrix):
 def createEuclideanDistanceMattrix(probabilityMattrix):
     distanceMattrix = []
     for i in xrange(0,N):
-        # print "euclidean ",i
         temp = []
         print "create eucl ",i;
         for j in xrange(0,N):
@@ -311,7 +246,6 @@ def createManhattanDistanceMattrix(probabilityMattrix):
 def createCosineDistanceMattrix(probabilityMattrix):
     distanceMattrix = []
     for i in xrange(0,N):
-        # print "cosine ",i
         temp = []
         print "create cosine",i;
         for j in xrange(0,N):
@@ -326,23 +260,17 @@ EuclideanDistMatt = createEuclideanDistanceMattrix(data)
 ManhattanDistMatt = createManhattanDistanceMattrix(data)
 CosineDistMatt = createCosineDistanceMattrix(data)
 
-NovelDistMatt=np.concatenate((NovelDistMatt,Xtend),axis=1);
-EuclideanDistMatt=np.concatenate((EuclideanDistMatt,Xtend),axis=1);
-ManhattanDistMatt=np.concatenate((ManhattanDistMatt,Xtend),axis=1);
-CosineDistMatt=np.concatenate((CosineDistMatt,Xtend),axis=1);
+# NovelDistMatt=np.concatenate((NovelDistMatt,Xtend),axis=1);
+# EuclideanDistMatt=np.concatenate((EuclideanDistMatt,Xtend),axis=1);
+# ManhattanDistMatt=np.concatenate((ManhattanDistMatt,Xtend),axis=1);
+# CosineDistMatt=np.concatenate((CosineDistMatt,Xtend),axis=1);
 
 # print data
 # print distMatt1
 # print distMatt2
-<<<<<<< ebe9e30ac69137b295bc28a16f03e1ff1240124a
-a = sum(distMatt1,[])
-b = sum(NovelDistMatt,[])
-correlationCoefficient = pearsonr(a,b)
-=======
 # a = sum(distMatt1,[])
 # b = sum(NovelDistMatt,[])
 # correlationCoefficient = pearsonr(a,b)
->>>>>>> Added SBAC for mixed data
 # print "correlationCoefficient : ",correlationCoefficient[0]
 
 def count(Y,label,number_of_classes):
@@ -368,27 +296,23 @@ print "---------- SBC Novel-------------"
 print count(Y,kmeans.labels_,number_of_clusters)
 print "----------------------------"
 
-<<<<<<< ebe9e30ac69137b295bc28a16f03e1ff1240124a
-kmeans = KMeans(n_clusters=number_of_clusters,n_init=100,tol=0.00001).fit(EuclideanDistMatt)
-=======
-kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(ManhattanDistMatt)
-print "---------- SBC Manhattan-------------"
-# print kmeans.labels_
-print count(Y,kmeans.labels_,number_of_clusters)
-print "----------------------------"
-
-kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(EuclideanDistMatt)
->>>>>>> Added SBAC for mixed data
-print "---------- SBC Euclidean-------------"
-# print kmeans.labels_
-print count(Y,kmeans.labels_,number_of_clusters)
-print "----------------------------"
-
-kmeans = KMeans(n_clusters=number_of_clusters,n_init=100,tol=0.00001).fit(CosineDistMatt)
-print "---------- SBC Cosine-------------"
-# print kmeans.labels_
-print count(Y,kmeans.labels_,number_of_clusters)
-print "----------------------------"
+# kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(ManhattanDistMatt)
+# print "---------- SBC Manhattan-------------"
+# # print kmeans.labels_
+# print count(Y,kmeans.labels_,number_of_clusters)
+# print "----------------------------"
+#
+# kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(EuclideanDistMatt)
+# print "---------- SBC Euclidean-------------"
+# # print kmeans.labels_
+# print count(Y,kmeans.labels_,number_of_clusters)
+# print "----------------------------"
+#
+# kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(CosineDistMatt)
+# print "---------- SBC Cosine-------------"
+# # print kmeans.labels_
+# print count(Y,kmeans.labels_,number_of_clusters)
+# print "----------------------------"
 
 
 km = KModes(n_clusters=number_of_clusters, n_init=100).fit(X)
@@ -397,47 +321,47 @@ print "---------- kmodes ----------"
 print count(Y,km.labels_,number_of_clusters)
 print "----------------------------"
 
-cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
-        np.transpose(NovelDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
-cluster_membership = np.argmax(u, axis=0)
-print "---------- Fuzzy SBC Novel-------------"
-# print kmeans.labels_
-print count(Y,cluster_membership,number_of_clusters)
-print "----------------------------"
-cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
-        np.transpose(EuclideanDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
-cluster_membership = np.argmax(u, axis=0)
-print "---------- Fuzzy SBC Euclidean-------------"
-# print kmeans.labels_
-print count(Y,cluster_membership,number_of_clusters)
-print "----------------------------"
-cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
-        np.transpose(CosineDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
-cluster_membership = np.argmax(u, axis=0)
-print "---------- Fuzzy SBC Cosine -------------"
-# print kmeans.labels_
-print count(Y,cluster_membership,number_of_clusters)
-print "----------------------------"
-
-# bandwidth = estimate_bandwidth(data, quantile=0.2, n_samples=N)
-# ms = MeanShift(bandwidth=bandwidth).fit(data)
-# print "---------- Mean Shift ----------"
-# print ms.labels_
-# print count(Y,ms.labels_,number_of_clusters)
+# cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
+#         np.transpose(NovelDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
+# cluster_membership = np.argmax(u, axis=0)
+# print "---------- Fuzzy SBC Novel-------------"
+# # print kmeans.labels_
+# print count(Y,cluster_membership,number_of_clusters)
 # print "----------------------------"
-
-fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(NovelDistMatt)
-print "---------- Hierarchical Novel----------"
-# print fa.labels_
-print count(Y,fa.labels_,number_of_clusters)
-print "----------------------------"
-fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(EuclideanDistMatt)
-print "---------- Hierarchical Euclidean ----------"
-# print fa.labels_
-print count(Y,fa.labels_,number_of_clusters)
-print "----------------------------"
-fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(CosineDistMatt)
-print "---------- Hierarchical Cosine----------"
-# print fa.labels_
-print count(Y,fa.labels_,number_of_clusters)
-print "----------------------------"
+# cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
+#         np.transpose(EuclideanDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
+# cluster_membership = np.argmax(u, axis=0)
+# print "---------- Fuzzy SBC Euclidean-------------"
+# # print kmeans.labels_
+# print count(Y,cluster_membership,number_of_clusters)
+# print "----------------------------"
+# cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
+#         np.transpose(CosineDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
+# cluster_membership = np.argmax(u, axis=0)
+# print "---------- Fuzzy SBC Cosine -------------"
+# # print kmeans.labels_
+# print count(Y,cluster_membership,number_of_clusters)
+# print "----------------------------"
+#
+# # bandwidth = estimate_bandwidth(data, quantile=0.2, n_samples=N)
+# # ms = MeanShift(bandwidth=bandwidth).fit(data)
+# # print "---------- Mean Shift ----------"
+# # print ms.labels_
+# # print count(Y,ms.labels_,number_of_clusters)
+# # print "----------------------------"
+#
+# fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(NovelDistMatt)
+# print "---------- Hierarchical Novel----------"
+# # print fa.labels_
+# print count(Y,fa.labels_,number_of_clusters)
+# print "----------------------------"
+# fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(EuclideanDistMatt)
+# print "---------- Hierarchical Euclidean ----------"
+# # print fa.labels_
+# print count(Y,fa.labels_,number_of_clusters)
+# print "----------------------------"
+# fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(CosineDistMatt)
+# print "---------- Hierarchical Cosine----------"
+# # print fa.labels_
+# print count(Y,fa.labels_,number_of_clusters)
+# print "----------------------------"
