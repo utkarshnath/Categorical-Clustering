@@ -29,15 +29,21 @@ for i in xrange(0,N):
 # a = np.array( [0,1,1,0,2,2,2,2,0,1] )
 # b = np.array( [6,5.5,7.5,6,10.5,9,7.5,9, 7.5,7.5] )
 
-def preprocessingNominal(a):
-    unique_elements, counts_elements = np.unique(a, return_counts=True)
+
+###################### Preprossesing for nominal features ######################
+# Here we have calculated dis-similarity score of feature to itself. eg score of (a,a) , (b,b)
+# Different features would have dis-similarity score equal to 1. eg (a,b)
+# Stored the dis-similarity in temp(Shape = feature domain X 2)
+
+def preprocessingNominal(values):
+    unique_elements, counts_elements = np.unique(values, return_counts=True)
     elementsAndFrequencies=np.column_stack((unique_elements,counts_elements))
     arr = elementsAndFrequencies[elementsAndFrequencies[:,1].argsort()]
-    n=np.shape(a)[0];
-    rows=np.shape(arr)[0];
-    previousVal=0;
-    j=0;
-    temp=[];
+    n = np.shape(values)[0]
+    rows = np.shape(arr)[0]
+    previousVal = 0
+    j = 0
+    temp = []
     for i in xrange(0,rows):
         if (j>i) or ( j==rows-1 and breakFlag==0):
             temp.append(previousVal)
@@ -50,16 +56,17 @@ def preprocessingNominal(a):
             else:
                 breakFlag=1
                 break
-        val=arr[i][1]* ((arr[i][1])-1)  ;
-        val=val*1.0/(n*(n-1)*1.0);
-        val=val* sameFrequencyCount
-        val=val+previousVal
+        val = arr[i][1] * ((arr[i][1])-1)
+        val = val * 1.0/(n*(n-1)*1.0)
+        val = val * sameFrequencyCount
+        val = val + previousVal
         temp.append(val)
-        previousVal=val;
-
-    add=arr[:,0]
-    temp=np.column_stack((add,temp))
+        previousVal = val
+    add = arr[:,0]
+    temp = np.column_stack((add,temp))
     return temp
+
+################################################################################
 
 def preprocessingNumerical(b):
     n=np.shape(b)[0];
@@ -81,7 +88,7 @@ def preprocessingNumerical(b):
                 for l in xrange(k,rows):
                     diff1=(arr[j][0]-arr[i][0])
                     diff2=(arr[l][0]-arr[k][0])
-                    population1=arr[j][1]+arr[i][1]
+                    population1=frequencyMatrix[i][j]
                     if diff2<=diff1:
                         if diff2==0:
                             valueToAdd=arr[l][1]*(arr[k][1]-1)*1.0000
@@ -90,7 +97,7 @@ def preprocessingNumerical(b):
                             valueToAdd=2*arr[l][1]*arr[k][1]*1.0000
                             valueToAdd=valueToAdd/(n*(n-1))
                         if diff2==diff1:
-                            population2=arr[k][1]+arr[l][1]
+                            population2=frequencyMatrix[k][l]
                             if population2<=population1:
                                 temp[i][j]=temp[i][j]+valueToAdd
                         else:
@@ -124,32 +131,37 @@ def calculateDissimilarityNumerical(x,feature):
             temp[i][j]=-2*lamda
     return temp
 
-def calculateDissimilarityNominal(x,feature):
-    n=np.shape(feature)[0]
-    m=np.shape(x)[0]
-    temp=np.zeros((n,n))
-    featurex=[]
+################# CALCULATE LAMDA FOR NOMINAL FEATURES #########################
+# Here we are finding just lower dis-similarity (DijDash) and are then appling
+# formula to calculate lamda.
+# Special case - When no just smaller dis-similarity available i.e min dis-similarity,
+# here we have taken DijDash = 0
+
+def calculateLamdaNominal(x,values):
+    n = np.shape(values)[0]
+    m = np.shape(x)[0]
+    lamdaNominal = np.zeros((n,n))
+    mappingOfValues = []
     arr = x[x[:,1].argsort()]
 
     for i in xrange(0,n):
         for j in xrange(0,m):
-            if feature[i]==arr[j][0]:
+            if values[i] == arr[j][0]:
                 break
-        featurex.append(j);
+        mappingOfValues.append(j);
 
     for i in xrange(0,n):
         for j in xrange(i,n):
-            if feature[i]!=feature[j]:
-                Dij=1
-                DijDash=arr[m-1][1]
+            if values[i]!=values[j]:
+                Dij = 1
+                DijDash = arr[m-1][1]
             else:
-                index=featurex[i]
-                Dij=arr[index][1]
+                index = mappingOfValues[i]
+                Dij = arr[index][1]
                 if index==0:
                     DijDash=0
                 else:
                     DijDash=arr[index-1][1]
-                    #to solve problem of matching values
                     if DijDash==Dij:
                         z=index
                         flag=0
@@ -159,40 +171,37 @@ def calculateDissimilarityNominal(x,feature):
                                 continue
                             else:
                                 flag=1
+                                break
                         if flag==1:
                             DijDash= arr[z][1]
                         else:
                             DijDash=0
-                    #to solve problem of matching values
-                    #remove till here to compare
-            # print i," ",j," ",Dij," ",DijDash
             if DijDash==0:
-                lamda=1-np.log(Dij)
+                lamda = 1-np.log(Dij)
             else:
-                l=np.log(Dij)
-                lDash=np.log(DijDash)
-                l=l*Dij
-                lDash=lDash*DijDash
-                l=l-lDash
-                lamda=l*1.0/(Dij-DijDash)
-                lamda=1-lamda
-            temp[i][j]= 2*lamda
-    return temp
+                l = np.log(Dij)
+                lDash = np.log(DijDash)
+                l = l*Dij
+                lDash = lDash*DijDash
+                l = l-lDash
+                lamda = l*1.0/(Dij-DijDash)
+                lamda = 1-lamda
+            lamdaNominal[i][j] = 2*lamda
+    return lamdaNominal
 
-a=XNominal[:,0]
-temp1=preprocessingNominal(a)
-DmatNominal=calculateDissimilarityNominal(temp1,a)
-# print DmatNominal
-lamdaMatrix=DmatNominal
-print lamdaMatrix.shape
+################################################################################
+
+values = XNominal[:,0]
+temp1 = preprocessingNominal(values)
+DmatNominal = calculateLamdaNominal(temp1,values)
+lamdaMatrix = DmatNominal
 
 for i in xrange(1,mNominal):
-    a=XNominal[:,i]
-    temp1=preprocessingNominal(a)
-    DmatNominal=calculateDissimilarityNominal(temp1,a)
-    # print i,"Nominal matrix ",DmatNominal
-    lamdaMatrix=np.dstack((lamdaMatrix,DmatNominal))
-    print lamdaMatrix.shape
+    values = XNominal[:,i]
+    temp1 = preprocessingNominal(values)
+    DmatNominal = calculateLamdaNominal(temp1,values)
+    lamdaMatrix = np.dstack((lamdaMatrix,DmatNominal))
+
 
 for i in xrange(0,mNumerical):
     b=XNumerical[:,i]
