@@ -9,17 +9,17 @@ import skfuzzy as fuzz
 import numpy as np
 from scipy.misc import factorial as fact
 
-lines = np.loadtxt("HeartDiseaseData.txt")
-XNominal = lines[:, [1, 2, 5, 6, 8, 10,11,12]]
-XNumerical = lines[:, [0, 3, 4, 7, 9]]
-mNominal=8
-mNumerical=5
-Y = lines[:, [13]]
-m = 13
-N = 270
-number_of_clusters = 7
-for i in xrange(0,N):
-        Y[i]-=1
+# lines = np.loadtxt("HeartDiseaseData.txt")
+# XNominal = lines[:, [1, 2, 5, 6, 8, 10,11,12]]
+# XNumerical = lines[:, [0, 3, 4, 7, 9]]
+# mNominal=8
+# mNumerical=5
+# Y = lines[:, [13]]
+# m = 13
+# N = 270
+# number_of_clusters = 7
+# for i in xrange(0,N):
+#         Y[i]-=1
 
 # lines = np.loadtxt("Balloon.txt")
 # XNominal = lines[:, [0, 1, 2, 3]]
@@ -32,6 +32,16 @@ for i in xrange(0,N):
 # number_of_clusters = 2
 # for i in xrange(0,N):
 #         Y[i]-=1
+
+lines = np.loadtxt("mushroom.txt")
+XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]]
+Y = lines[:, [22]]
+mNominal = 22
+mNumerical=0
+N = 8124
+number_of_clusters = 2
+for i in xrange(0,N):
+        Y[i]-=1
 
 # a = np.array( [0,1,1,0,2,2,2,2,0,1] )
 # b = np.array( [6,5.5,7.5,6,10.5,9,7.5,9, 7.5,7.5] )
@@ -240,7 +250,7 @@ for k in xrange(0,m-1):
     d=d**k
     d=d/(fact(k))
     sum=sum+d
-#     sum = sum + (((lamdaFinal/2))**k)/(abs(fact(k)))
+
 
 disimilarityFinal = np.exp(-1*(lamdaFinal/2))*sum
 similarityFinal =  1 - disimilarityFinal
@@ -269,6 +279,36 @@ def createNovelDistanceMattrix(probabilityMattrix):
         distanceMattrix.append(temp)
     return distanceMattrix
 
+def createEuclideanDistanceMattrix(probabilityMattrix):
+    distanceMattrix = []
+    for i in xrange(0,N):
+        temp = []
+        for j in xrange(0,N):
+            value = distance.euclidean(probabilityMattrix[i],probabilityMattrix[j])
+            temp.append(value)
+        distanceMattrix.append(temp)
+    return distanceMattrix
+
+def createManhattanDistanceMattrix(probabilityMattrix):
+    distanceMattrix = []
+    for i in xrange(0,N):
+        temp = []
+        for j in xrange(0,N):
+            value = distance.cityblock(probabilityMattrix[i],probabilityMattrix[j])
+            temp.append(value)
+        distanceMattrix.append(temp)
+    return distanceMattrix
+
+def createCosineDistanceMattrix(probabilityMattrix):
+    distanceMattrix = []
+    for i in xrange(0,N):
+        temp = []
+        for j in xrange(0,N):
+            value = distance.cosine(probabilityMattrix[i],probabilityMattrix[j])
+            temp.append(value)
+        distanceMattrix.append(temp)
+    return distanceMattrix
+
 def count(Y,label,number_of_classes):
     simMattrix = []
     for i in xrange(0,number_of_classes):
@@ -286,9 +326,75 @@ def count(Y,label,number_of_classes):
     return similarLabels/(N*1.0)
 
 NovelDistMatt = createNovelDistanceMattrix(similarityFinal)
+EuclideanDistMatt = createEuclideanDistanceMattrix(similarityFinal)
+ManhattanDistMatt = createManhattanDistanceMattrix(similarityFinal)
+CosineDistMatt = createCosineDistanceMattrix(similarityFinal)
 
 kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(NovelDistMatt)
 print "---------- SBAC Novel-------------"
 # print kmeans.labels_
 print count(Y,kmeans.labels_,number_of_clusters)
+print "----------------------------"
+
+kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(ManhattanDistMatt)
+print "---------- SBC Manhattan-------------"
+# print kmeans.labels_
+print count(Y,kmeans.labels_,number_of_clusters)
+print "----------------------------"
+
+kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(EuclideanDistMatt)
+print "---------- SBC Euclidean-------------"
+# print kmeans.labels_
+print count(Y,kmeans.labels_,number_of_clusters)
+print "----------------------------"
+
+kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(CosineDistMatt)
+print "---------- SBC Cosine-------------"
+# print kmeans.labels_
+print count(Y,kmeans.labels_,number_of_clusters)
+print "----------------------------"
+
+cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
+        np.transpose(NovelDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
+cluster_membership = np.argmax(u, axis=0)
+print "---------- Fuzzy SBC Novel-------------"
+# print kmeans.labels_
+print count(Y,cluster_membership,number_of_clusters)
+print "----------------------------"
+cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
+        np.transpose(EuclideanDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
+cluster_membership = np.argmax(u, axis=0)
+print "---------- Fuzzy SBC Euclidean-------------"
+# print kmeans.labels_
+print count(Y,cluster_membership,number_of_clusters)
+print "----------------------------"
+cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
+        np.transpose(CosineDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
+cluster_membership = np.argmax(u, axis=0)
+print "---------- Fuzzy SBC Cosine -------------"
+# print kmeans.labels_
+print count(Y,cluster_membership,number_of_clusters)
+print "----------------------------"
+
+# bandwidth = estimate_bandwidth(data, quantile=0.2, n_samples=N)
+# ms = MeanShift(bandwidth=bandwidth).fit(data)
+# print "---------- Mean Shift ----------"
+# print ms.labels_
+# print count(Y,ms.labels_,number_of_clusters)
+# print "----------------------------"
+
+fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(NovelDistMatt)
+print "---------- Hierarchical Novel----------"
+# print fa.labels_
+print count(Y,fa.labels_,number_of_clusters)
+print "----------------------------"
+fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(EuclideanDistMatt)
+print "---------- Hierarchical Euclidean ----------"
+# print fa.labels_
+print count(Y,fa.labels_,number_of_clusters)
+print "----------------------------"
+fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(CosineDistMatt)
+print "---------- Hierarchical Cosine----------"
+# print fa.labels_
+print count(Y,fa.labels_,number_of_clusters)
 print "----------------------------"
