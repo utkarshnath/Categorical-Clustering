@@ -29,24 +29,26 @@ for i in xrange(0,N):
 # a = np.array( [0,1,1,0,2,2,2,2,0,1] )
 # b = np.array( [6,5.5,7.5,6,10.5,9,7.5,9, 7.5,7.5] )
 
-def preprocessing1(a):
+def preprocessingNominal(a):
     unique_elements, counts_elements = np.unique(a, return_counts=True)
     elementsAndFrequencies=np.column_stack((unique_elements,counts_elements))
     arr = elementsAndFrequencies[elementsAndFrequencies[:,1].argsort()]
-    n=10;
+    n=np.shape(a)[0];
     rows=np.shape(arr)[0];
     previousVal=0;
     j=0;
     temp=[];
     for i in xrange(0,rows):
-        if(j>i):
+        if (j>i) or ( j==rows-1 and breakFlag==0):
             temp.append(previousVal)
             continue
         sameFrequencyCount=1;
+        breakFlag=0
         for j in xrange(i+1,rows):
             if(arr[j][1]==arr[i][1]):
                 sameFrequencyCount=sameFrequencyCount+1
             else:
+                breakFlag=1
                 break
         val=arr[i][1]* ((arr[i][1])-1)  ;
         val=val*1.0/(n*(n-1)*1.0);
@@ -59,8 +61,8 @@ def preprocessing1(a):
     temp=np.column_stack((add,temp))
     return temp
 
-def preprocessing2(b):
-    n=10
+def preprocessingNumerical(b):
+    n=np.shape(b)[0];
     unique_elements, counts_elements = np.unique(b, return_counts=True)
     elementsAndFrequencies=np.column_stack((unique_elements,counts_elements))
     arr = elementsAndFrequencies[elementsAndFrequencies[:,0].argsort()]
@@ -165,7 +167,7 @@ def calculateDissimilarityNominal(x,feature):
                     #remove till here to compare
             # print i," ",j," ",Dij," ",DijDash
             if DijDash==0:
-                lamda=1-Dij
+                lamda=1-np.log(Dij)
             else:
                 l=np.log(Dij)
                 lDash=np.log(DijDash)
@@ -178,102 +180,115 @@ def calculateDissimilarityNominal(x,feature):
     return temp
 
 a=XNominal[:,0]
-# print a.shape
-temp1=preprocessing1(a)
+temp1=preprocessingNominal(a)
 DmatNominal=calculateDissimilarityNominal(temp1,a)
+# print DmatNominal
 lamdaMatrix=DmatNominal
 print lamdaMatrix.shape
 
 for i in xrange(1,mNominal):
     a=XNominal[:,i]
-    temp1=preprocessing1(a)
+    temp1=preprocessingNominal(a)
     DmatNominal=calculateDissimilarityNominal(temp1,a)
-    # print "Nom "
-    # print DmatNominal
+    # print i,"Nominal matrix ",DmatNominal
     lamdaMatrix=np.dstack((lamdaMatrix,DmatNominal))
     print lamdaMatrix.shape
 
 for i in xrange(0,mNumerical):
     b=XNumerical[:,i]
-    # print b.shape
-    temp2=preprocessing2(b)
+    temp2=preprocessingNumerical(b)
     DmatNumerical=calculateDissimilarityNumerical(temp2,b)
-    # print "num"
-    # print DmatNumerical
     lamdaMatrix=np.dstack((lamdaMatrix,DmatNumerical))
     print lamdaMatrix.shape
 
+# print lamdaMatrix
 lamdaFinal=np.sum(lamdaMatrix,axis = 2)
-print lamdaFinal
-
+# print "lamda final ",lamdaFinal
+#
 sum = 0
 for k in xrange(0,m-1):
     d=lamdaFinal/2.0
+    # print "before raise ",k
     # print d
     d=d**k
+    # print "after raise ",k
     # print d
-    d=d/abs(fact(k))
-    # print d
+    d=d/(fact(k))
+    # print "d ",d
     sum=sum+d
+    # print "sum ",sum
 #     sum = sum + (((lamdaFinal/2))**k)/(abs(fact(k)))
 
-disimilarityFinal = np.exp((-1)*(lamdaFinal/2)*sum)
-print disimilarityFinal
+# print "sum matrix"
+# print sum
+# print "......"
+# print "......"
+# print "......"
+disimilarityFinal = np.exp(-1*(lamdaFinal/2))*sum
+# print "dissimilarity"
+# print "......"
+# print "......"
+# print "......"
+# print disimilarityFinal
 similarityFinal =  1 - disimilarityFinal
+# print "similarity"
+# print "......"
+# print "......"
+# print "......"
+# print similarityFinal
 
-print similarityFinal
+def distance1(a,b):
+    d = 0
+    # print a
+    # print b
+    for i in xrange(0,len(a)):
+        x = abs(a[i]-b[i])
+        if (a[i]==0):
+            # print a[i]," "
+            a[i]=1
+            # print a[i]," "
+        if (b[i]==0):
+            # print b[i]," "
+            b[i]=1
+            # print b[i]," "
+        # print x
+        d+= pow(x,2)/(a[i]*b[i]*1.0)
 
-# def distance1(a,b):
-#     d = 0
-#     print a
-#     print b
-#     for i in xrange(0,len(a)):
-#         x = abs(a[i]-b[i])
-#         if (a[i]==0):
-#             # print a[i]," "
-#             a[i]=1
-#             # print a[i]," "
-#         if (b[i]==0):
-#             # print b[i]," "
-#             b[i]=1
-#             # print b[i]," "
-#         # print x
-#         d+= pow(x,2)/(a[i]*b[i]*1.0)
-#     print d
-#     d = np.sqrt(d)
-#     # d=d/100
-#     return d
-#
-# def createNovelDistanceMattrix(probabilityMattrix):
-#     distanceMattrix = []
-#     for i in xrange(0,N):
-#         temp = []
-#         for j in xrange(0,N):
-#             value = distance1(probabilityMattrix[i],probabilityMattrix[j])
-#             temp.append(value)
-#         distanceMattrix.append(temp)
-#     return distanceMattrix
-#
-# def count(Y,label,number_of_classes):
-#     simMattrix = []
-#     for i in xrange(0,number_of_classes):
-#         temp = []
-#         for j in xrange(0,number_of_classes):
-#             temp.append(0)
-#         simMattrix.append(temp)
-#     similarLabels = 0
-#     for i in xrange(0,number_of_classes):
-#         for j in xrange(0,N):
-#             if(Y[j]==i):
-#                 x = label[j]
-#                 simMattrix[i][x] = simMattrix[i][x] + 1
-#         similarLabels+=max(simMattrix[i])
-#     return similarLabels/(N*1.0)
-#
-# NovelDistMatt = createNovelDistanceMattrix(similarityFinal)
-#
-# kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(NovelDistMatt)
-# print "---------- SBAC Novel-------------"
-# # print kmeans.labels_
-# print count(Y,kmeans.labels_,number_of_clusters)
-# print "----------------------------"
+    d = np.sqrt(d)
+    # print d
+    # d=d/100
+    return d
+
+def createNovelDistanceMattrix(probabilityMattrix):
+    distanceMattrix = []
+    for i in xrange(0,N):
+        temp = []
+        for j in xrange(0,N):
+            value = distance1(probabilityMattrix[i],probabilityMattrix[j])
+            temp.append(value)
+        distanceMattrix.append(temp)
+    return distanceMattrix
+
+def count(Y,label,number_of_classes):
+    simMattrix = []
+    for i in xrange(0,number_of_classes):
+        temp = []
+        for j in xrange(0,number_of_classes):
+            temp.append(0)
+        simMattrix.append(temp)
+    similarLabels = 0
+    for i in xrange(0,number_of_classes):
+        for j in xrange(0,N):
+            if(Y[j]==i):
+                x = label[j]
+                simMattrix[i][x] = simMattrix[i][x] + 1
+        similarLabels+=max(simMattrix[i])
+    return similarLabels/(N*1.0)
+
+NovelDistMatt = createNovelDistanceMattrix(similarityFinal)
+
+kmeans = KMeans(n_clusters=number_of_clusters,init='k-means++',n_init=100,tol=0.00001).fit(NovelDistMatt)
+print "---------- SBAC Novel-------------"
+# print kmeans.labels_
+print count(Y,kmeans.labels_,number_of_clusters)
+print "----------------------------"
