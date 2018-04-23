@@ -1,7 +1,14 @@
-# -*- coding: utf-8 -*-
 from sklearn.cluster import KMeans
+from kmodes.kmodes import KModes
+from sklearn.cluster import MeanShift, estimate_bandwidth
+from sklearn.cluster import AgglomerativeClustering,FeatureAgglomeration
+import numpy as np
+from scipy.stats.stats import pearsonr
+from scipy.spatial import distance
+import skfuzzy as fuzz
 import numpy as np
 from scipy.misc import factorial as fact
+
 lines = np.loadtxt("HeartDiseaseData.txt")
 XNominal = lines[:, [1, 2, 5, 6, 8, 10,11,12]]
 XNumerical = lines[:, [0, 3, 4, 7, 9]]
@@ -68,69 +75,6 @@ def preprocessingNominal(values):
 
 ################################################################################
 
-def preprocessingNumerical(b):
-    n=np.shape(b)[0];
-    unique_elements, counts_elements = np.unique(b, return_counts=True)
-    elementsAndFrequencies=np.column_stack((unique_elements,counts_elements))
-    arr = elementsAndFrequencies[elementsAndFrequencies[:,0].argsort()]
-    rows=np.shape(arr)[0];
-    frequencyMatrix=np.zeros((rows,rows))
-    for i in xrange(0,rows):
-        for j in xrange(i,rows):
-            if i==j:
-                frequencyMatrix[i][j]=arr[i][1];
-            else:
-                frequencyMatrix[i][j]=frequencyMatrix[i][j-1]+arr[j][1];
-    temp=np.zeros((rows,rows))
-    for i in xrange(0,rows):
-        for j in xrange(i,rows):
-            for k in xrange(0,rows):
-                for l in xrange(k,rows):
-                    diff1=(arr[j][0]-arr[i][0])
-                    diff2=(arr[l][0]-arr[k][0])
-                    population1=frequencyMatrix[i][j]
-                    if diff2<=diff1:
-                        if diff2==0:
-                            valueToAdd=arr[l][1]*(arr[k][1]-1)*1.0000
-                            valueToAdd=valueToAdd/(n*(n-1))
-                        else:
-                            valueToAdd=2*arr[l][1]*arr[k][1]*1.0000
-                            valueToAdd=valueToAdd/(n*(n-1))
-                        if diff2==diff1:
-                            population2=frequencyMatrix[k][l]
-                            if population2<=population1:
-                                temp[i][j]=temp[i][j]+valueToAdd
-                        else:
-                            temp[i][j]=temp[i][j]+valueToAdd
-                    else:
-                        break
-    add=arr[:,0];
-    temp=np.column_stack((add,temp))
-    return temp
-
-def calculateDissimilarityNumerical(x,feature):
-    n=np.shape(feature)[0]
-    m=np.shape(x)[0]
-    temp=np.zeros((n,n))
-    featurex=[]
-    for i in xrange(0,n):
-        for j in xrange(0,m):
-            if feature[i]==x[j][0]:
-                break
-        featurex.append(j);
-
-    for i in xrange(0,n):
-        for j in xrange(i,n):
-            indexX=featurex[i]
-            indexY=featurex[j]
-            if feature[i]<feature[j]:
-                Dij=x[indexX][indexY+1]
-            else:
-                Dij=x[indexY][indexX+1]
-            lamda=np.log(Dij)
-            temp[i][j]=-2*lamda
-    return temp
-
 ################# CALCULATE LAMDA FOR NOMINAL FEATURES #########################
 # Here we are finding just lower dis-similarity (DijDash) and are then appling
 # formula to calculate lamda.
@@ -191,6 +135,83 @@ def calculateLamdaNominal(x,values):
 
 ################################################################################
 
+################### PREPROCESSING FOR NUMERICAL FEATURES #######################
+# Here we have calculated dis-similarity score for Numerical features, (N X N)
+# and stored that in temp
+
+def preprocessingNumerical(values):
+    n=np.shape(values)[0];
+    unique_elements, counts_elements = np.unique(values, return_counts=True)
+    elementsAndFrequencies = np.column_stack((unique_elements,counts_elements))
+    arr = elementsAndFrequencies[elementsAndFrequencies[:,0].argsort()]
+    rows = np.shape(arr)[0];
+    frequencyMatrix = np.zeros((rows,rows))
+    for i in xrange(0,rows):
+        for j in xrange(i,rows):
+            if i==j:
+                frequencyMatrix[i][j] = arr[i][1];
+            else:
+                frequencyMatrix[i][j] = frequencyMatrix[i][j-1]+arr[j][1];
+    temp = np.zeros((rows,rows))
+    for i in xrange(0,rows):
+        for j in xrange(i,rows):
+            for k in xrange(0,rows):
+                for l in xrange(k,rows):
+                    diff1 = abs(arr[j][0]-arr[i][0])
+                    diff2 = abs(arr[l][0]-arr[k][0])
+                    population1 = frequencyMatrix[max(i,j)][min(i,j)]
+                    population2 = frequencyMatrix[max(k,l)][min(k,l)]
+                    if diff2<=diff1:
+                        if diff2==0:
+                            valueToAdd = arr[l][1] * (arr[l][1]-1) * 1.0
+                            valueToAdd = valueToAdd/(n*(n-1))
+                        else:
+                            valueToAdd = 2 * arr[l][1] * arr[k][1] * 1.0
+                            valueToAdd = valueToAdd/(n*(n-1))
+                        if diff2==diff1:
+                            if population2<=population1:
+                                temp[i][j] = temp[i][j] + valueToAdd
+                        else:
+                            temp[i][j] = temp[i][j]+valueToAdd
+                    else:
+                        break
+    index = arr[:,0];
+    temp = np.column_stack((index,temp))
+    return temp
+
+################################################################################
+
+################# CALCULATE LAMDA FOR NOMINAL FEATURES #########################
+
+def calculateLamdaNumerical(x,feature):
+    n=np.shape(feature)[0]
+    m=np.shape(x)[0]
+    temp=np.zeros((n,n))
+    featurex=[]
+    for i in xrange(0,n):
+        for j in xrange(0,m):
+            if feature[i]==x[j][0]:
+                break
+        featurex.append(j);
+
+    for i in xrange(0,n):
+        for j in xrange(i,n):
+            indexX=featurex[i]
+            indexY=featurex[j]
+            if feature[i]<feature[j]:
+                Dij=x[indexX][indexY+1]
+            else:
+                Dij=x[indexY][indexX+1]
+            if Dij==0:
+                lamda = 0
+            else:
+                lamda=np.log(Dij)
+            temp[i][j]=-2*lamda
+    return temp
+
+################################################################################
+
+
 values = XNominal[:,0]
 temp1 = preprocessingNominal(values)
 DmatNominal = calculateLamdaNominal(temp1,values)
@@ -204,11 +225,10 @@ for i in xrange(1,mNominal):
 
 
 for i in xrange(0,mNumerical):
-    b=XNumerical[:,i]
-    temp2=preprocessingNumerical(b)
-    DmatNumerical=calculateDissimilarityNumerical(temp2,b)
-    lamdaMatrix=np.dstack((lamdaMatrix,DmatNumerical))
-    print lamdaMatrix.shape
+    values = XNumerical[:,i]
+    temp2 = preprocessingNumerical(values)
+    DmatNumerical = calculateLamdaNumerical(temp2,values)
+    lamdaMatrix = np.dstack((lamdaMatrix,DmatNumerical))
 
 # print lamdaMatrix
 lamdaFinal=np.sum(lamdaMatrix,axis = 2)
@@ -217,55 +237,26 @@ lamdaFinal=np.sum(lamdaMatrix,axis = 2)
 sum = 0
 for k in xrange(0,m-1):
     d=lamdaFinal/2.0
-    # print "before raise ",k
-    # print d
     d=d**k
-    # print "after raise ",k
-    # print d
     d=d/(fact(k))
-    # print "d ",d
     sum=sum+d
-    # print "sum ",sum
 #     sum = sum + (((lamdaFinal/2))**k)/(abs(fact(k)))
 
-# print "sum matrix"
-# print sum
-# print "......"
-# print "......"
-# print "......"
 disimilarityFinal = np.exp(-1*(lamdaFinal/2))*sum
-# print "dissimilarity"
-# print "......"
-# print "......"
-# print "......"
-# print disimilarityFinal
 similarityFinal =  1 - disimilarityFinal
-# print "similarity"
-# print "......"
-# print "......"
-# print "......"
-# print similarityFinal
+
 
 def distance1(a,b):
     d = 0
-    # print a
-    # print b
     for i in xrange(0,len(a)):
         x = abs(a[i]-b[i])
         if (a[i]==0):
-            # print a[i]," "
             a[i]=1
-            # print a[i]," "
         if (b[i]==0):
-            # print b[i]," "
             b[i]=1
-            # print b[i]," "
-        # print x
         d+= pow(x,2)/(a[i]*b[i]*1.0)
 
     d = np.sqrt(d)
-    # print d
-    # d=d/100
     return d
 
 def createNovelDistanceMattrix(probabilityMattrix):
