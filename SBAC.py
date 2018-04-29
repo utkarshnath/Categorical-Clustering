@@ -8,6 +8,34 @@ from scipy.spatial import distance
 import skfuzzy as fuzz
 import numpy as np
 from scipy.misc import factorial as fact
+import random
+
+lines = np.loadtxt("breast_cancer_data.txt",delimiter=',')
+XNominal = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9]]
+XNumerical=[]
+Y = lines[:, [10]]
+m = 9
+mNominal=9
+mNumerical=0
+N = 699
+number_of_clusters = 2
+for i in xrange(0,N):
+    if(Y[i]==2):
+        Y[i]=0
+    else:
+        Y[i]=1
+
+# lines = np.loadtxt("fitting_lenses.txt")
+# XNominal = lines[:, [1, 2, 3, 4]]
+# XNumerical=[]
+# Y = lines[:, [5]]
+# m = 4
+# mNominal=4
+# mNumerical=0
+# N = 24
+# number_of_clusters = 3
+# for i in xrange(0,N):
+#         Y[i]-=1
 
 # lines = np.loadtxt("HeartDiseaseData.txt")
 # XNominal = lines[:, [1, 2, 5, 6, 8, 10,11,12]]
@@ -33,15 +61,169 @@ from scipy.misc import factorial as fact
 # for i in xrange(0,N):
 #         Y[i]-=1
 
-lines = np.loadtxt("mushroom.txt")
-XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]]
-Y = lines[:, [22]]
-mNominal = 22
-mNumerical=0
-N = 8124
-number_of_clusters = 2
-for i in xrange(0,N):
-        Y[i]-=1
+# lines = np.loadtxt("SoyBeenSmall.txt")
+# XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34]]
+# XNumerical=[]
+# Y = lines[:, [35]]
+# m = 35
+# mNominal=35
+# mNumerical=0
+# N = 47
+# number_of_clusters = 4
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("HayesRoth.txt")
+# XNominal = lines[:, [1, 2, 3, 4]]
+# XNumerical=[]
+# Y = lines[:, [5]]
+# m = 4
+# mNominal=4
+# mNumerical=0
+# N = 132
+# number_of_clusters = 3
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("Promoters.txt")
+# XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,
+# 44,45,46,47,48,49,50,51,52,53,54,55,56]]
+# XNumerical=[]
+# Y = lines[:, [57]]
+# m = 57
+# mNominal=57
+# mNumerical=0
+# N = 106
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("Monks.txt")
+# XNominal = lines[:, [0,1, 2, 3, 4,5]]
+# XNumerical=[]
+# Y = lines[:, [6]]
+# m = 6
+# mNominal=6
+# mNumerical=0
+# N = 432
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("nursery.txt")
+# XNominal = lines[:, [0, 1, 2, 3, 4, 5, 6, 7]]
+# XNumerical=[]
+# Y = lines[:, [8]]
+# m = 8
+# mNominal=8
+# mNumerical=0
+# N = 12959
+# number_of_clusters = 5
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("Voters.txt")
+# XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15]]
+# XNumerical=[]
+# Y = lines[:, [16]]
+# m = 16
+# mNominal=16
+# mNumerical=0
+# N = 435
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("ticTacToe.txt")
+# XNominal = lines[:, [0, 1, 2, 3, 4, 5, 6, 7, 8]]
+# XNumerical=[]
+# Y = lines[:, [9]]
+# m = 9
+# mNominal=9
+# mNumerical=0
+# N = 958
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("spectf.txt")
+# XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,
+# 33,34,35,36,37,38,39,40,41,42,43]]
+# Y = lines[:, [44]]
+# m = 44
+# mNominal=44
+# XNumerical=[]
+# mNumerical=0
+# N = 267
+# number_of_clusters = 2
+
+# lines = np.loadtxt("Audiology.txt")
+# X = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,
+# 44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68]]
+# Y = lines[:, [69]]
+# m = 69
+# mNominal=69
+# XNumerical=[]
+# mNumerical=0
+# N = 226
+# number_of_clusters = 24
+# for i in xrange(0,N):
+#         Y[i]-=1
+#
+# lines = np.loadtxt("ZooD.txt")
+# XNominal = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,14,15,16]]
+# Y = lines[:, [0]]
+# XNumerical = lines[:, [13]]
+# m = 16
+# mNominal=15
+# mNumerical=1
+# N = 101
+# number_of_clusters = 7
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("Flowies.txt")
+# XNominal = lines[:, [1, 2, 3, 4]]
+# Y = lines[:, [0]]
+# XNumerical = lines[:, [5]]
+# mNominal = 4
+# mNumerical=1
+# m=5
+# N = 168
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("HorseShoeCrab.txt")
+# XNominal = lines[:, [0, 1]]
+# Y = lines[:, [5]]
+# XNumerical = lines[:, [2, 4]]
+# m = 4
+# mNominal=2
+# mNumerical=2
+# N = 173
+# number_of_clusters = 2
+
+# lines = np.loadtxt("mushroom.txt")
+# Class0=lines[lines[:, 22] == 1]
+# Class1=lines[lines[:, 22] == 2]
+# start0=random.randint(1,np.shape(Class0)[1])
+# start1=random.randint(1,np.shape(Class1)[1])
+# Class0=Class0[start0:start0+199,:]
+# Class1=Class1[start1:start1+199,:]
+# reducedData=np.concatenate((Class0,Class1), axis=0);
+# XNominal = reducedData[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]]
+# Y = reducedData[:, [22]]
+# mNominal = 22
+# mNumerical=0
+# m=22
+# N = 200
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+
+
 
 # a = np.array( [0,1,1,0,2,2,2,2,0,1] )
 # b = np.array( [6,5.5,7.5,6,10.5,9,7.5,9, 7.5,7.5] )
@@ -60,6 +242,7 @@ def preprocessingNominal(values):
     rows = np.shape(arr)[0]
     previousVal = 0
     j = 0
+    breakFlag=1
     temp = []
     for i in xrange(0,rows):
         if (j>i) or ( j==rows-1 and breakFlag==0):
