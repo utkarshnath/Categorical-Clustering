@@ -10,20 +10,20 @@ import numpy as np
 from scipy.misc import factorial as fact
 import random
 
-lines = np.loadtxt("breast_cancer_data.txt",delimiter=',')
-XNominal = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9]]
-XNumerical=[]
-Y = lines[:, [10]]
-m = 9
-mNominal=9
-mNumerical=0
-N = 699
-number_of_clusters = 2
-for i in xrange(0,N):
-    if(Y[i]==2):
-        Y[i]=0
-    else:
-        Y[i]=1
+# lines = np.loadtxt("breast_cancer_data.txt",delimiter=',')
+# XNominal = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9]]
+# XNumerical=[]
+# Y = lines[:, [10]]
+# m = 9
+# mNominal=9
+# mNumerical=0
+# N = 699
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#     if(Y[i]==2):
+#         Y[i]=0
+#     else:
+#         Y[i]=1
 
 # lines = np.loadtxt("fitting_lenses.txt")
 # XNominal = lines[:, [1, 2, 3, 4]]
@@ -204,23 +204,23 @@ for i in xrange(0,N):
 # N = 173
 # number_of_clusters = 2
 
-# lines = np.loadtxt("mushroom.txt")
-# Class0=lines[lines[:, 22] == 1]
-# Class1=lines[lines[:, 22] == 2]
-# start0=random.randint(1,np.shape(Class0)[1])
-# start1=random.randint(1,np.shape(Class1)[1])
-# Class0=Class0[start0:start0+199,:]
-# Class1=Class1[start1:start1+199,:]
-# reducedData=np.concatenate((Class0,Class1), axis=0);
-# XNominal = reducedData[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]]
-# Y = reducedData[:, [22]]
-# mNominal = 22
-# mNumerical=0
-# m=22
-# N = 200
-# number_of_clusters = 2
-# for i in xrange(0,N):
-#         Y[i]-=1
+lines = np.loadtxt("mushroom.txt")
+Class0=lines[lines[:, 22] == 1]
+Class1=lines[lines[:, 22] == 2]
+randomIndex0 = np.random.randint(Class0.shape[0],size=(100))
+randomIndex1 = np.random.randint(Class1.shape[0],size=(100))
+Class0 = Class0[randomIndex0,:]
+Class1 = Class1[randomIndex1,:]
+reducedData=np.concatenate((Class0,Class1), axis=0);
+XNominal = reducedData[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]]
+Y = reducedData[:, [22]]
+mNominal = 22
+mNumerical=0
+m=22
+N = XNominal.shape[0]
+number_of_clusters = 2
+for i in xrange(0,N):
+        Y[i]-=1
 
 
 
@@ -314,7 +314,10 @@ def calculateLamdaNominal(x,values):
                         else:
                             DijDash=0
             if DijDash==0:
-                lamda = 1-np.log(Dij)
+                if Dij==0:
+                    lamda = 1
+                else:
+                    lamda = 1-np.log(Dij)
             else:
                 l = np.log(Dij)
                 lDash = np.log(DijDash)
