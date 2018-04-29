@@ -111,16 +111,47 @@ import random
 #         Y[i]-=1
 
 # lines = np.loadtxt("nursery.txt")
-# XNominal = lines[:, [0, 1, 2, 3, 4, 5, 6, 7]]
 # XNumerical=[]
-# Y = lines[:, [8]]
+
+# Class0=lines[lines[:, 8] == 1]
+# Class1=lines[lines[:,8] == 2]
+# Class2=lines[lines[:, 8] == 3]
+# Class3=lines[lines[:, 8] == 4]
+# Class4=lines[lines[:, 8] == 5]
+#
+# if Class0.shape[0]>=200:
+#     randomIndex0 = np.random.randint(Class0.shape[0],size=(100))
+#     Class0 = Class0[randomIndex0,:]
+# if Class1.shape[0]>=200:
+#     randomIndex1 = np.random.randint(Class1.shape[0],size=(100))
+#     Class1 = Class1[randomIndex1,:]
+# if Class2.shape[0]>=200:
+#     randomIndex2 = np.random.randint(Class2.shape[0],size=(100))
+#     Class2 = Class2[randomIndex2,:]
+# if Class3.shape[0]>=200:
+#     randomIndex3 = np.random.randint(Class3.shape[0],size=(100))
+#     Class3 = Class3[randomIndex3,:]
+# if Class4.shape[0]>=200:
+#     randomIndex4 = np.random.randint(Class4.shape[0],size=(100))
+#     Class4 = Class4[randomIndex4,:]
+#
+#
+# reducedData=np.concatenate((Class0,Class1,Class2,Class3,Class4), axis=0);
+# XNominal = reducedData[:, [0, 1, 2, 3, 4, 5, 6, 7]]
+# Y = reducedData[:, [8]]
 # m = 8
 # mNominal=8
 # mNumerical=0
-# N = 12959
+# N = XNominal.shape[0]
 # number_of_clusters = 5
 # for i in xrange(0,N):
 #         Y[i]-=1
+
+
+# randomIndex = np.random.randint(lines.shape[0],size=(200))
+# lines = lines[randomIndex,:]
+# XNominal = lines[:, [0, 1, 2, 3, 4, 5, 6, 7]]
+
 
 # lines = np.loadtxt("Voters.txt")
 # XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15]]
@@ -158,7 +189,7 @@ import random
 # number_of_clusters = 2
 
 # lines = np.loadtxt("Audiology.txt")
-# X = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,
+# XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,
 # 44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68]]
 # Y = lines[:, [69]]
 # m = 69
@@ -169,7 +200,7 @@ import random
 # number_of_clusters = 24
 # for i in xrange(0,N):
 #         Y[i]-=1
-#
+
 # lines = np.loadtxt("ZooD.txt")
 # XNominal = lines[:, [1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,14,15,16]]
 # Y = lines[:, [0]]
@@ -204,21 +235,83 @@ import random
 # N = 173
 # number_of_clusters = 2
 
-lines = np.loadtxt("mushroom.txt")
-Class0=lines[lines[:, 22] == 1]
-Class1=lines[lines[:, 22] == 2]
-randomIndex0 = np.random.randint(Class0.shape[0],size=(100))
-randomIndex1 = np.random.randint(Class1.shape[0],size=(100))
-Class0 = Class0[randomIndex0,:]
-Class1 = Class1[randomIndex1,:]
-reducedData=np.concatenate((Class0,Class1), axis=0);
-XNominal = reducedData[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]]
-Y = reducedData[:, [22]]
-mNominal = 22
+# lines = np.loadtxt("mushroom.txt")
+# Class0=lines[lines[:, 22] == 1]
+# Class1=lines[lines[:, 22] == 2]
+# randomIndex0 = np.random.randint(Class0.shape[0],size=(100))
+# randomIndex1 = np.random.randint(Class1.shape[0],size=(100))
+# Class0 = Class0[randomIndex0,:]
+# Class1 = Class1[randomIndex1,:]
+# reducedData=np.concatenate((Class0,Class1), axis=0);
+# XNominal = reducedData[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21]]
+# Y = reducedData[:, [22]]
+# mNominal = 22
+# mNumerical=0
+# m=22
+# N = XNominal.shape[0]
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("car.txt")
+# XNominal = lines[:, [0, 1, 2, 3, 4, 5]]
+# XNumerical=[]
+# Y = lines[:, [6]]
+# m = 6
+# mNominal=6
+# mNumerical=0
+# N = 1728
+# number_of_clusters = 4
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("shuttle-landing-control.txt",delimiter=',')
+# XNominal = lines[:, [0, 1, 2, 3, 4, 5]]
+# XNumerical=[]
+# Y = lines[:, [6]]
+# m = 6
+# mNominal=6
+# mNumerical=0
+# N = 15
+# number_of_clusters = 2
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("balance-scale.txt",delimiter=',')
+# XNominal = lines[:, [1, 2, 3, 4]]
+# XNumerical=[]
+# Y = lines[:, [0]]
+# m = 4
+# mNominal=4
+# mNumerical=0
+# N = 625
+# number_of_clusters = 3
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+# lines = np.loadtxt("soybean-large.txt",delimiter=',')
+# XNominal = lines[:, [1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35]]
+# XNumerical=[]
+# Y = lines[:, [0]]
+# m = 35
+# mNominal=35
+# mNumerical=0
+# N = 290
+# print lines.shape
+# number_of_clusters = 15
+# for i in xrange(0,N):
+#         Y[i]-=1
+
+lines = np.loadtxt("fisher-order.txt",delimiter=',')
+XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33]]
+XNumerical=[]
+Y = lines[:, [34]]
+print lines.shape
+m = 34
+mNominal=34
 mNumerical=0
-m=22
-N = XNominal.shape[0]
-number_of_clusters = 2
+N = 47
+number_of_clusters = 4
 for i in xrange(0,N):
         Y[i]-=1
 
