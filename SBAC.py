@@ -253,17 +253,40 @@ import random
 # for i in xrange(0,N):
 #         Y[i]-=1
 
-# lines = np.loadtxt("car.txt")
-# XNominal = lines[:, [0, 1, 2, 3, 4, 5]]
-# XNumerical=[]
-# Y = lines[:, [6]]
-# m = 6
-# mNominal=6
-# mNumerical=0
-# N = 1728
-# number_of_clusters = 4
-# for i in xrange(0,N):
-#         Y[i]-=1
+lines = np.loadtxt("car.txt")
+XNominal = lines[:, [0, 1, 2, 3, 4, 5]]
+XNumerical=[]
+
+Class0=lines[lines[:, 6] == 1]
+Class1=lines[lines[:,6] == 2]
+Class2=lines[lines[:, 6] == 3]
+Class3=lines[lines[:, 6] == 4]
+
+
+if Class0.shape[0]>=200:
+    randomIndex0 = np.random.randint(Class0.shape[0],size=(100))
+    Class0 = Class0[randomIndex0,:]
+if Class1.shape[0]>=200:
+    randomIndex1 = np.random.randint(Class1.shape[0],size=(100))
+    Class1 = Class1[randomIndex1,:]
+if Class2.shape[0]>=200:
+    randomIndex2 = np.random.randint(Class2.shape[0],size=(100))
+    Class2 = Class2[randomIndex2,:]
+if Class3.shape[0]>=200:
+    randomIndex3 = np.random.randint(Class3.shape[0],size=(100))
+    Class3 = Class3[randomIndex3,:]
+
+
+reducedData=np.concatenate((Class0,Class1,Class2,Class3), axis=0);
+XNominal = reducedData[:,[0,1,2,3,4,5]]
+Y = reducedData[:, [6]]
+m = 6
+mNominal=6
+mNumerical=0
+N = XNominal.shape[0]
+number_of_clusters = 4
+for i in xrange(0,N):
+        Y[i]-=1
 
 # lines = np.loadtxt("shuttle-landing-control.txt",delimiter=',')
 # XNominal = lines[:, [0, 1, 2, 3, 4, 5]]
@@ -302,18 +325,18 @@ import random
 # for i in xrange(0,N):
 #         Y[i]-=1
 
-lines = np.loadtxt("fisher-order.txt",delimiter=',')
-XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33]]
-XNumerical=[]
-Y = lines[:, [34]]
-print lines.shape
-m = 34
-mNominal=34
-mNumerical=0
-N = 47
-number_of_clusters = 4
-for i in xrange(0,N):
-        Y[i]-=1
+# lines = np.loadtxt("fisher-order.txt",delimiter=',')
+# XNominal = lines[:, [0, 1, 2, 3, 4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33]]
+# XNumerical=[]
+# Y = lines[:, [34]]
+# print lines.shape
+# m = 34
+# mNominal=34
+# mNumerical=0
+# N = 47
+# number_of_clusters = 4
+# for i in xrange(0,N):
+#         Y[i]-=1
 
 
 
@@ -654,6 +677,14 @@ print "---------- Fuzzy SBC Cosine -------------"
 # print kmeans.labels_
 print count(Y,cluster_membership,number_of_clusters)
 print "----------------------------"
+print "----------------------------"
+cntr, u, u0, d, jm, p, fpc = fuzz.cluster.cmeans(
+        np.transpose(ManhattanDistMatt), number_of_clusters, 2, error=0.005, maxiter=1000, init=None)
+cluster_membership = np.argmax(u, axis=0)
+print "---------- Fuzzy SBC Manhattan -------------"
+# print kmeans.labels_
+print count(Y,cluster_membership,number_of_clusters)
+print "----------------------------"
 
 # bandwidth = estimate_bandwidth(data, quantile=0.2, n_samples=N)
 # ms = MeanShift(bandwidth=bandwidth).fit(data)
@@ -674,6 +705,11 @@ print count(Y,fa.labels_,number_of_clusters)
 print "----------------------------"
 fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(CosineDistMatt)
 print "---------- Hierarchical Cosine----------"
+# print fa.labels_
+print count(Y,fa.labels_,number_of_clusters)
+print "----------------------------"
+fa = FeatureAgglomeration(n_clusters=number_of_clusters).fit(ManhattanDistMatt)
+print "---------- Hierarchical Manhattan----------"
 # print fa.labels_
 print count(Y,fa.labels_,number_of_clusters)
 print "----------------------------"
